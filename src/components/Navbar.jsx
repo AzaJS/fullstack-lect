@@ -68,9 +68,13 @@ export default function Navbar() {
               </Box>
             </Box>
           ) : (
-            <Box>
-              <Button sx={buttonsStyle}>Login</Button>
-              <Button sx={buttonsStyle}>Register</Button>
+            <Box sx={{ display: "flex" }}>
+              <Button sx={buttonsStyle} onClick={() => navigate("/login")}>
+                Login
+              </Button>
+              <Button sx={buttonsStyle} onClick={() => navigate("/register")}>
+                Register
+              </Button>
             </Box>
           )}
         </Toolbar>
