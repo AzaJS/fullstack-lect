@@ -14,7 +14,7 @@ import { useProducts } from "../../contexts/productsContext";
 
 const AddProduct = () => {
   const { user } = useAuth();
-  const { getCategories } = useProducts();
+  const { getCategories, categories, addProduct } = useProducts();
 
   useEffect(() => {
     getCategories();
@@ -24,7 +24,7 @@ const AddProduct = () => {
     title: "",
     description: "",
     price: "",
-    category: "",
+    category: 0,
   });
 
   const handleInp = (e) => {
@@ -85,12 +85,20 @@ const AddProduct = () => {
               labelId="select-label"
               name="category"
             >
-              <MenuItem value={10}>ten</MenuItem>
-              <MenuItem value={20}>twenty</MenuItem>
-              <MenuItem value={30}>thirty</MenuItem>
+              {categories?.map((item) => (
+                <MenuItem key={item.id} value={item.id}>
+                  {item.title}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
-          <Button sx={{ m: 1 }} variant="outlined" fullWidth size="large">
+          <Button
+            sx={{ m: 1 }}
+            variant="outlined"
+            fullWidth
+            size="large"
+            onClick={() => addProduct(product)}
+          >
             Add product
           </Button>
         </Box>

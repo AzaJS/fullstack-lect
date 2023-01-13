@@ -6,6 +6,7 @@ export const useProducts = () => useContext(productContext);
 
 const INIT_STATE = {
   products: [],
+  pages: 0,
   categories: [],
 };
 
@@ -14,7 +15,8 @@ function reducer(state = INIT_STATE, action) {
     case "GET_PRODUCTS":
       return {
         ...state,
-        products: action.payload,
+        pages: Math.ceil(action.payload.count / 6),
+        products: action.payload.results,
       };
     case "GET_CATEGORIES":
       return {
@@ -51,6 +53,17 @@ const ProductContextProvider = ({ children }) => {
         },
       };
       const res = await axios.post(`${API}/products/`, newProduct, config);
+      console.log(res);
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
+
+  async function getProducts() {
+    try {
+      const res = await axios(`${API}/products/`);
+      dispatch({ type: "GET_PRODUCTS", payload: res.data });
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
@@ -59,6 +72,10 @@ const ProductContextProvider = ({ children }) => {
   let values = {
     getCategories,
     categories: state.categories,
+    addProduct,
+    getProducts,
+    products: state.products,
+    pages: state.pages,
   };
 
   return (
