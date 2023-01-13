@@ -9,6 +9,7 @@ const INIT_STATE = {
   products: [],
   pages: 0,
   categories: [],
+  oneProduct: null,
 };
 
 function reducer(state = INIT_STATE, action) {
@@ -23,6 +24,11 @@ function reducer(state = INIT_STATE, action) {
       return {
         ...state,
         categories: action.payload,
+      };
+    case "GET_ONE_PRODUCT":
+      return {
+        ...state,
+        oneProduct: action.payload,
       };
     default:
       return state;
@@ -88,6 +94,40 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function toggleLike(id) {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const Authorization = `Bearer ${token.access}`;
+      const config = {
+        headers: {
+          Authorization,
+        },
+      };
+      const res = await axios(`${API}/products/${id}/toggle_like/`, config);
+      console.log(res);
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function getOneProduct(id) {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const Authorization = `Bearer ${token.access}`;
+      const config = {
+        headers: {
+          Authorization,
+        },
+      };
+      const res = await axios(`${API}/products/${id}/`, config);
+      console.log(res);
+      dispatch({ type: "GET_ONE_PRODUCT", payload: res.data });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   let values = {
     getCategories,
     categories: state.categories,
@@ -96,6 +136,9 @@ const ProductContextProvider = ({ children }) => {
     products: state.products,
     pages: state.pages,
     deleteProduct,
+    toggleLike,
+    getOneProduct,
+    oneProduct: state.oneProduct,
   };
 
   return (
