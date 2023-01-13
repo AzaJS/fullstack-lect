@@ -2,6 +2,7 @@ import { Box, Pagination } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../../contexts/productsContext";
+import ProductCard from "./ProductCard";
 
 const ProductsList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +30,7 @@ const ProductsList = () => {
       <Box>
         Products List
         {products.map((item) => (
-          <p>{item.title}</p>
+          <ProductCard item={item} key={item.id} />
         ))}
       </Box>
       <Box>

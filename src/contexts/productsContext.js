@@ -1,5 +1,6 @@
 import axios from "axios";
 import React, { createContext, useContext, useReducer } from "react";
+import { useNavigate } from "react-router-dom";
 
 const productContext = createContext();
 export const useProducts = () => useContext(productContext);
@@ -32,6 +33,7 @@ const API = "http://34.173.115.25/api/v1";
 
 const ProductContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INIT_STATE);
+  const navigate = useNavigate();
 
   async function getCategories() {
     try {
@@ -54,6 +56,7 @@ const ProductContextProvider = ({ children }) => {
       };
       const res = await axios.post(`${API}/products/`, newProduct, config);
       console.log(res);
+      navigate("/products");
     } catch (error) {
       console.log(error.response.data);
     }
@@ -69,6 +72,22 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  async function deleteProduct(id) {
+    try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const Authorization = `Bearer ${token.access}`;
+      const config = {
+        headers: {
+          Authorization,
+        },
+      };
+      const res = await axios.delete(`${API}/products/${id}`, config);
+      getProducts();
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   let values = {
     getCategories,
     categories: state.categories,
@@ -76,6 +95,7 @@ const ProductContextProvider = ({ children }) => {
     getProducts,
     products: state.products,
     pages: state.pages,
+    deleteProduct,
   };
 
   return (
