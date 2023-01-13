@@ -1,16 +1,28 @@
 import { Box, Pagination } from "@mui/material";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useProducts } from "../../contexts/productsContext";
 
 const ProductsList = () => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchParams, setSearchParams] = useSearchParams();
   const { getProducts, products, pages } = useProducts();
 
   useEffect(() => {
     getProducts();
   }, []);
 
-  //   перерыв до 11:47
-  console.log(pages);
+  // следить за параметрами
+  useEffect(() => {
+    getProducts();
+  }, [searchParams]);
+
+  // следить за текущей страницей и менять searchParams
+  useEffect(() => {
+    setSearchParams({
+      page: currentPage,
+    });
+  }, [currentPage]);
 
   return (
     <div>
@@ -21,7 +33,13 @@ const ProductsList = () => {
         ))}
       </Box>
       <Box>
-        <Pagination variant="outlined" color="primary" count={5} page={1} />
+        <Pagination
+          variant="outlined"
+          color="primary"
+          count={pages}
+          page={currentPage}
+          onChange={(e, page) => setCurrentPage(page)}
+        />
       </Box>
     </div>
   );

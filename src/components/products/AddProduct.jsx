@@ -28,11 +28,28 @@ const AddProduct = () => {
   });
 
   const handleInp = (e) => {
-    setProduct({
-      ...product,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.name === "image") {
+      setProduct({
+        ...product,
+        [e.target.name]: e.target.files[0],
+      });
+    } else {
+      setProduct({
+        ...product,
+        [e.target.name]: e.target.value,
+      });
+    }
   };
+
+  function handleSave() {
+    let newProduct = new FormData();
+    newProduct.append("title", product.title);
+    newProduct.append("description", product.description);
+    newProduct.append("price", product.price);
+    newProduct.append("category", product.category);
+    newProduct.append("image", product.image);
+    addProduct(newProduct);
+  }
 
   console.log(product);
 
@@ -77,6 +94,8 @@ const AddProduct = () => {
             value={product.price}
             onChange={handleInp}
           />
+          <input type="file" name="image" onChange={handleInp} />
+
           <FormControl fullWidth>
             <InputLabel id="select-label">Category</InputLabel>
             <Select
@@ -97,7 +116,7 @@ const AddProduct = () => {
             variant="outlined"
             fullWidth
             size="large"
-            onClick={() => addProduct(product)}
+            onClick={handleSave}
           >
             Add product
           </Button>

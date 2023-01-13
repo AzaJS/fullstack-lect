@@ -61,7 +61,7 @@ const ProductContextProvider = ({ children }) => {
 
   async function getProducts() {
     try {
-      const res = await axios(`${API}/products/`);
+      const res = await axios(`${API}/products/${window.location.search}`);
       dispatch({ type: "GET_PRODUCTS", payload: res.data });
       console.log(res);
     } catch (error) {
