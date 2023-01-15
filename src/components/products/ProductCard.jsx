@@ -19,7 +19,12 @@ export default function ProductCard({ item }) {
 
   return (
     <Card sx={{ maxWidth: 345 }}>
-      <CardMedia sx={{ height: 140 }} image={item.image} alt={item.title} />
+      {item.image ? (
+        <CardMedia sx={{ height: 140 }} image={item.image} alt={item.title} />
+      ) : (
+        <CardMedia sx={{ height: 140 }} />
+      )}
+
       <CardContent onClick={() => navigate(`/products/${item.id}`)}>
         <Typography gutterBottom variant="h5" component="div">
           {item.title}
@@ -32,56 +37,35 @@ export default function ProductCard({ item }) {
         </Typography>
       </CardContent>
       <CardActions>
-        {item.author == user ? (
+        {/* если пользователь является автором, то есть кнопка  */}
+        {item.is_author ? (
           <>
             <Button size="small" onClick={() => deleteProduct(item.id)}>
               Delete
             </Button>
           </>
         ) : null}
-        <FavoriteBorderIcon
-          onClick={() => {
-            toggleLike(item.id);
-          }}
-        />
+
+        {/* ! если пользователь лайкнул пост, то отобразится заполненное сердце */}
+        {item.liked_by_user ? (
+          <>
+            <FavoriteIcon
+              onClick={() => {
+                toggleLike(item.id);
+              }}
+            />
+          </>
+        ) : (
+          <>
+            <FavoriteBorderIcon
+              onClick={() => {
+                toggleLike(item.id);
+              }}
+            />
+          </>
+        )}
+        {/* кол-во лайков */}
         {item.likes}
-        {/* {isLiked ? (
-          <>
-            <FavoriteIcon
-              onClick={() => {
-                toggleLike(item.id);
-                setIsLiked(false);
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <FavoriteBorderIcon
-              onClick={() => {
-                toggleLike(item.id);
-                setIsLiked(true);
-              }}
-            />
-          </>
-        )} */}
-        {/* когда починят бэк лучше использовать эту запись */}
-        {/* {item.liked_by_user ? <>
-            <FavoriteIcon
-              onClick={() => {
-                toggleLike(item.id);
-                setIsLiked(false);
-              }}
-            />
-          </>
-        ) : (
-          <>
-            <FavoriteBorderIcon
-              onClick={() => {
-                toggleLike(item.id);
-                setIsLiked(true);
-              }}
-            />
-          </>} */}
       </CardActions>
     </Card>
   );

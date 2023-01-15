@@ -15,6 +15,7 @@ export default function Navbar() {
   const { user, checkAuth, logout } = useAuth();
 
   useEffect(() => {
+    // проверка токена на действительность
     if (localStorage.getItem("token")) {
       checkAuth();
     }

@@ -41,9 +41,9 @@ const ProductContextProvider = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, INIT_STATE);
   const navigate = useNavigate();
 
+  // получить категории продуктов (используется при создании продукта)
   async function getCategories() {
     try {
-      // const token
       const res = await axios(`${API}/category/list/`);
       dispatch({ type: "GET_CATEGORIES", payload: res.data.results });
     } catch (error) {
@@ -51,8 +51,28 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  // ! CREATE (токен нужен)
   async function addProduct(newProduct) {
     try {
+      const token = JSON.parse(localStorage.getItem("token"));
+      const Authorization = `Bearer ${token.access}`; // ? запись-ключ для добавления
+      const config = {
+        headers: {
+          Authorization,
+        },
+      };
+      const res = await axios.post(`${API}/products/`, newProduct, config);
+      // console.log(res);
+      navigate("/products");
+    } catch (error) {
+      console.log(error.response.data);
+    }
+  }
+
+  // ! READ (отображение продуктов)
+  async function getProducts() {
+    try {
+      // !!! ТОКЕН НУЖЕН, ХОТЬ И В ДОКУМЕНТАЦИИ НЕ ОБЯЗАТЕЛЕН
       const token = JSON.parse(localStorage.getItem("token"));
       const Authorization = `Bearer ${token.access}`;
       const config = {
@@ -60,24 +80,18 @@ const ProductContextProvider = ({ children }) => {
           Authorization,
         },
       };
-      const res = await axios.post(`${API}/products/`, newProduct, config);
-      console.log(res);
-      navigate("/products");
-    } catch (error) {
-      console.log(error.response.data);
-    }
-  }
-
-  async function getProducts() {
-    try {
-      const res = await axios(`${API}/products/${window.location.search}`);
+      const res = await axios(
+        `${API}/products/${window.location.search}`,
+        config
+      );
       dispatch({ type: "GET_PRODUCTS", payload: res.data });
-      console.log(res);
+      // console.log(res);
     } catch (error) {
       console.log(error);
     }
   }
 
+  // ! DELETE (TOKEN)
   async function deleteProduct(id) {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -94,6 +108,7 @@ const ProductContextProvider = ({ children }) => {
     }
   }
 
+  // ! добавление/удаление своего лайка(токен нужен)
   async function toggleLike(id) {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -104,13 +119,14 @@ const ProductContextProvider = ({ children }) => {
         },
       };
       const res = await axios(`${API}/products/${id}/toggle_like/`, config);
-      console.log(res);
+      // console.log(res);
       getProducts();
     } catch (error) {
       console.log(error);
     }
   }
 
+  // детальный просмотр
   async function getOneProduct(id) {
     try {
       const token = JSON.parse(localStorage.getItem("token"));
@@ -121,7 +137,7 @@ const ProductContextProvider = ({ children }) => {
         },
       };
       const res = await axios(`${API}/products/${id}/`, config);
-      console.log(res);
+      // console.log(res);
       dispatch({ type: "GET_ONE_PRODUCT", payload: res.data });
     } catch (error) {
       console.log(error);

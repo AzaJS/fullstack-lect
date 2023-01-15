@@ -13,6 +13,7 @@ const AuthContextProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
+  // регистрация
   const register = async (formData) => {
     try {
       const res = await axios.post(`${API}register/`, formData);
@@ -25,6 +26,7 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // авторизация
   const login = async (formData, email) => {
     try {
       const res = await axios.post(`${API}login/`, formData);
@@ -39,6 +41,7 @@ const AuthContextProvider = ({ children }) => {
     }
   };
 
+  // проверка access токена на действительность
   async function checkAuth() {
     let token = JSON.parse(localStorage.getItem("token"));
     // console.log(token);
@@ -70,6 +73,7 @@ const AuthContextProvider = ({ children }) => {
     }
   }
 
+  // выход из аккаунта
   function logout() {
     localStorage.removeItem("token");
     localStorage.removeItem("username");

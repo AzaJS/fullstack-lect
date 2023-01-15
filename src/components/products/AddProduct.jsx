@@ -24,13 +24,14 @@ const AddProduct = () => {
     title: "",
     description: "",
     price: "",
-    category: 0,
+    category: "",
   });
 
   const handleInp = (e) => {
     if (e.target.name === "image") {
       setProduct({
         ...product,
+        // чтобы отправить картинку используют e.target.files (FileList)
         [e.target.name]: e.target.files[0],
       });
     } else {
@@ -42,7 +43,7 @@ const AddProduct = () => {
   };
 
   function handleSave() {
-    let newProduct = new FormData();
+    let newProduct = new FormData(); // FormData для загрузки файла с компьютера
     newProduct.append("title", product.title);
     newProduct.append("description", product.description);
     newProduct.append("price", product.price);
@@ -51,10 +52,11 @@ const AddProduct = () => {
     addProduct(newProduct);
   }
 
-  console.log(product);
+  // console.log(product);
 
   return (
     <>
+      {/* проверка на админа */}
       {user == "azretmakers@gmail.com" ? (
         <Box
           sx={{
